@@ -30,12 +30,18 @@ const WebGiViewer = forwardRef((props, ref) => {
   const [targetRef, setTargetRef] = useState(null);
   const [positionRef, setPositionRef] = useState(null);
   const [cameraRef, setCameraRef] = useState(null);
+  const canvasContainerRef = useRef(null);
+  const [previewMode, setPreviewMode] = useState(false);
+  const [isMobile, setIsMobile] = useState(null);
 
   useImperativeHandle(ref, () => ({
     triggerPreview() {
+      setPreviewMode(true);
+      canvasContainerRef.current.style.pointerEvents = "all";
+      props.contentRef.current.style.opacity = 0;
       gsap.to(positionRef, {
         x: 13.04,
-        y: -2.01,
+        y: 2.01,
         z: 2.29,
         duration: 2,
         onUpdate: () => {
@@ -49,6 +55,8 @@ const WebGiViewer = forwardRef((props, ref) => {
         z: 0.0,
         duration: 2,
       });
+
+      viewerRef.scene.activeCamera.setCameraOptions({ controlsEnabled: true });
     },
   }));
 
@@ -65,6 +73,9 @@ const WebGiViewer = forwardRef((props, ref) => {
     });
 
     setViewerRef(viewer);
+    const isMobile = mobileAndTabletCheck();
+    setIsMobile(isMobile);
+
     // Add some plugins
     const manager = await viewer.addPlugin(AssetManagerPlugin);
     const camera = viewer.scene.activeCamera;
@@ -74,7 +85,7 @@ const WebGiViewer = forwardRef((props, ref) => {
     setCameraRef(camera);
     setPositionRef(position);
     setTargetRef(target);
-    
+
     // Add plugins individually.
     await viewer.addPlugin(GBufferPlugin);
     await viewer.addPlugin(new ProgressivePlugin(32));
@@ -116,9 +127,50 @@ const WebGiViewer = forwardRef((props, ref) => {
     setupViewer();
   }, []);
 
+  const handleExit = useCallback(() => {
+    canvasContainerRef.current.style.pointerEvents = "none";
+    props.contentRef.current.style.opacity = 1;
+    viewerRef.scene.activeCamera.setCameraOptions({ controlsEnabled: false });
+    setPreviewMode(false);
+    gsap
+      .to(positionRef, {
+        x: -0.0247695367,
+        y: 7.4853469649,
+        z: -3.4901875041,
+        scrollTrigger: {
+          trigger: ".display-section",
+          start: "top bottom",
+          end: "top top",
+          scrub: 2,
+          immediateRender: false,
+        },
+        onUpdate: () => {
+          viewerRef.setDirty();
+          cameraRef.positionTargetUpdated(true);
+          },
+      });
+      gsap.to(targetRef, {
+        x: 0,
+        y: 1.9029907227,
+        z: 0,
+        scrollTrigger: {
+          trigger: ".display-section",
+          start: "top bottom",
+          end: "top top",
+          scrub: 2,
+          immediateRender: false,
+        },
+      });
+  }, [canvasContainerRef, viewerRef, positionRef, targetRef, cameraRef]);
+
   return (
-    <div id="webgi-canvas-container">
+    <div ref={canvasContainerRef} id="webgi-canvas-container">
       <canvas id="webgi-canvas" ref={canvasRef} />
+      {previewMode && (
+        <button className="button" onClick={handleExit}>
+          Back
+        </button>
+      )}
     </div>
   );
 });

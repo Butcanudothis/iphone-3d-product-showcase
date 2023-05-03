@@ -6,17 +6,20 @@ import WebGiViewer from "./components/WebGiViewer.jsx";
 import { useRef } from "react";
 function App() {
   const webGiViewerRef = useRef();
+  const contentRef = useRef();
 
   const handlePreview = () => {
     webGiViewerRef.current.triggerPreview();
   };
   return (
     <div className="App">
-      <Nav />
-      <Jumbotron />
-      <SoundSection />
-      <DisplaySection triggerPreview={handlePreview} />
-      <WebGiViewer ref={webGiViewerRef} />
+      <div id="content" ref={contentRef}>
+        <Nav />
+        <Jumbotron />
+        <SoundSection />
+        <DisplaySection triggerPreview={handlePreview} />
+      </div>
+      <WebGiViewer ref={webGiViewerRef} contentRef={contentRef} />
     </div>
   );
 }
