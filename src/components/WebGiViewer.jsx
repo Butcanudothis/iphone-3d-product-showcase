@@ -60,9 +60,9 @@ const WebGiViewer = forwardRef((props, ref) => {
     },
   }));
 
-  const memoizedScrollAnimation = useCallback((position, target, onUpdate) => {
+  const memoizedScrollAnimation = useCallback((position, target, onUpdate,isMobile) => {
     if (position && target && onUpdate) {
-      scrollAnimation(position, target, onUpdate);
+      scrollAnimation(position, target, onUpdate, isMobile);
     }
   }, []);
 
@@ -104,6 +104,11 @@ const WebGiViewer = forwardRef((props, ref) => {
       controlsEnabled: false,
     });
 
+    if (isMobile) {
+      position.set(13.04, 2.01, 2.29);
+      target.set(0.11, 1.0, 0.0);
+      props.contentRef.current.className = "mobile-or-tablet";
+    }
     window.scrollTo(0, 0);
 
     let needsUpdate = true;
@@ -120,7 +125,7 @@ const WebGiViewer = forwardRef((props, ref) => {
       }
     });
 
-    memoizedScrollAnimation(position, target, onUpdate);
+    memoizedScrollAnimation(position, target, onUpdate,isMobile);
   }, []);
 
   useEffect(() => {
@@ -135,8 +140,8 @@ const WebGiViewer = forwardRef((props, ref) => {
     gsap
       .to(positionRef, {
         x: -0.0247695367,
-        y: 7.4853469649,
-        z: -3.4901875041,
+        y: !isMobile ?7.4853469649:9,
+        z: !isMobile ?-3.4901875041:-4.1,
         scrollTrigger: {
           trigger: ".display-section",
           start: "top bottom",
@@ -151,7 +156,7 @@ const WebGiViewer = forwardRef((props, ref) => {
       });
       gsap.to(targetRef, {
         x: 0,
-        y: 1.9029907227,
+        y:!isMobile ? 1.9029907227:0.78,
         z: 0,
         scrollTrigger: {
           trigger: ".display-section",
