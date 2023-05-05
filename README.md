@@ -1,6 +1,11 @@
 # iPhone Showcase
+[![Netlify Status](https://api.netlify.com/api/v1/badges/2b1b0500-fb26-44a5-9963-e53140019538/deploy-status)](https://app.netlify.com/sites/iphone3dshowcase/deploys)
 
-This is a showcase website for iPhone 14 built with React and CSS. In this project, we learned how to build a 3D animation in React using WebGi (powered by Three.js) and GSAP. 
+
+This is a showcase website for iPhone 14 built with React and CSS. In this project, we learned how to build a 3D animation in React using WebGi (powered by Three.js) and GSAP. [Here](https://iphoneshowcase.avarma.me) is the live deployed version on netlify.
+
+## Desktop Preview
+![Alt Text](https://github.com/Butcanudothis/iphone-3d-product-showcase/blob/main/iphone.gif)
 
 ## Table of Contents
 - [Technologies Used](#technologies-used)
